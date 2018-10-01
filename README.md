@@ -52,6 +52,10 @@ gcloud kms encrypt \
 
 Add the `account.json.enc` file to the repository in the `packer` sub-directory.
 
+You will need to add Packer as a Docker image in your GCP project's container
+registry. See the [Google Cloud Builders Community Packer][google-cloud-builders-community-packer]
+image.
+
 You can use a `cloudbuild.yaml` like:
 
 ```yaml
@@ -98,3 +102,4 @@ Add the `cloudbuild.yaml` to the repository and create a
 [google-cloud-build]: https://cloud.google.com/cloud-build/
 [google-cloud-build-encrypt]: https://cloud.google.com/cloud-build/docs/securing-builds/use-encrypted-secrets-credentials
 [google-cloud-build-trigger]: https://cloud.google.com/cloud-build/docs/running-builds/automate-builds
+[google-cloud-builders-community-packer]: https://github.com/GoogleCloudPlatform/cloud-builders-community/tree/master/packer
