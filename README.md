@@ -26,6 +26,65 @@ Switch to the `packer` sub-directory.
        vagrant box add ubuntu1804 box/virtualbox/ubuntu1804-0.1.0.box
        vagrant init ubuntu1804
 
+## Google Cloud Build
+
+If you want to automate this build in [Google Cloud Build][google-cloud-build],
+one way you can do that is by setting up a service account, encrypting the
+account's credentials and adding the encrypted file to the repository,
+adding a `cloudbuild.yaml`, and setting up the Google Cloud Build trigger.
+
+You will need to create a Google Cloud Service account with
+`Compute Engine Instance Admin (v1)` and `Service Account User` roles.
+Then create a credentials JSON file. See the
+[Packer Google Compute Builder][packer-googlecompute] page for more details.
+
+Then, encrypt the credentials file (renamed to `account.json`) using
+[Google KMS][google-cloud-build-encrypt] after setting up a Google KMS keyring:
+
+```
+gcloud kms encrypt \
+  --plaintext-file=account.json \
+  --ciphertext-file=account.json.enc \
+  --location=[KEYRING-LOCATION] \
+  --keyring=[KEYRING-NAME] \
+  --key=[KEY-NAME]
+```
+
+Add the `account.json.enc` file to the repository in the `packer` sub-directory.
+
+You can use a `cloudbuild.yaml` like:
+
+```yaml
+steps:
+  - name: gcr.io/cloud-builders/gcloud
+    args:
+      - kms
+      - decrypt
+      - --ciphertext-file=packer/account.json.enc
+      - --plaintext-file=packer/account.json
+      - --location=[KEYRING-LOCATION]
+      - --keyring=core-[KEYRING-NAME]
+      - --key=[KEY-NAME]
+    id: decrypt credentials
+  - name: gcr.io/$PROJECT_ID/packer
+    args:
+      - build
+      - -only=googlecompute
+      - -var
+      - ssh_username=ubuntu
+      - -var
+      - googlecompute_account_file=account.json
+      - -var
+      - googlecompute_project_id=$PROJECT_ID
+      - instance.json
+    dir: packer
+    id: build image with packer
+timeout: 1200s
+```
+
+Add the `cloudbuild.yaml` to the repository and create a
+[Cloud Build trigger][google-cloud-build-trigger].
+
 ## License
 
 [Apache-2.0 License][license]
@@ -36,3 +95,6 @@ Switch to the `packer` sub-directory.
 [virtualbox]: https://www.virtualbox.org
 [vmware]: https://www.vmware.com/products/fusion.html
 [vagrant]: https://www.vagrantup.com
+[google-cloud-build]: https://cloud.google.com/cloud-build/
+[google-cloud-build-encrypt]: https://cloud.google.com/cloud-build/docs/securing-builds/use-encrypted-secrets-credentials
+[google-cloud-build-trigger]: https://cloud.google.com/cloud-build/docs/running-builds/automate-builds
