@@ -18,5 +18,5 @@ If there is a security issue, please email security@bryantluk.com . You can
 use this [PGP public key][pgpkey] to encrypt any message
 if desired.
 
-[license]: https://github.com/bluk/template-project-configs/blob/master/LICENSE
+[license]: LICENSE
 [pgpkey]: https://bryantluk.com/gpg.key
