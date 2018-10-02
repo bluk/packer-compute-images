@@ -1,0 +1,31 @@
+steps:
+  - name: gcr.io/cloud-builders/gsutil
+    args:
+      - cp
+      - ${_ENCRYPTED_ACCOUNT_CREDENTIAL_GS_PATH}
+      - ${_ENCRYPTED_ACCOUNT_CREDENTIAL_LOCAL_PATH}
+    id: copy credentials
+  - name: gcr.io/cloud-builders/gcloud
+    args:
+      - kms
+      - decrypt
+      - --ciphertext-file=${_ENCRYPTED_ACCOUNT_CREDENTIAL_LOCAL_PATH}
+      - --plaintext-file=packer/account.json
+      - --location=${_KMS_KEYRING_LOCATION}
+      - --keyring=${_KMS_KEYRING_NAME}
+      - --key=${_KMS_KEY_NAME}
+    id: decrypt credentials
+  - name: gcr.io/${PROJECT_ID}/packer
+    args:
+      - build
+      - -only=googlecompute
+      - -var
+      - ssh_username=ubuntu
+      - -var
+      - googlecompute_account_file=account.json
+      - -var
+      - googlecompute_project_id=${PROJECT_ID}
+      - instance.json
+    dir: packer
+    id: build image with packer
+timeout: 1200s
