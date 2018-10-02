@@ -31,8 +31,9 @@ MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,umac-128-etm@op
 
 # Authentication:
 
+PermitRootLogin no
+
 #LoginGraceTime 2m
-#PermitRootLogin prohibit-password
 #StrictModes yes
 #MaxAuthTries 6
 #MaxSessions 10
@@ -57,7 +58,6 @@ PubkeyAuthentication yes
 
 # To disable tunneled clear text passwords, change to no here!
 PasswordAuthentication no
-#PermitEmptyPasswords no
 
 # Change to yes to enable challenge-response passwords (beware issues with
 # some PAM modules and threads)
@@ -101,7 +101,6 @@ PrintMotd no
 #Compression delayed
 #ClientAliveInterval 0
 #ClientAliveCountMax 3
-#UseDNS no
 #PidFile /var/run/sshd.pid
 #MaxStartups 10:30:100
 #PermitTunnel no
@@ -134,4 +133,3 @@ UseDNS no
 KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
 
 StreamLocalBindUnlink yes
-
