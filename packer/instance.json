@@ -162,7 +162,9 @@
       ],
       "execute_command": "echo '{{ user `ssh_password` }}' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
       "scripts": [
-        "script/vagrant.sh"
+        "script/vagrant.sh",
+        "script/vmware.sh",
+        "script/virtualbox.sh"
       ],
       "type": "shell",
       "expect_disconnect": "true",
@@ -198,8 +200,6 @@
       "execute_command": "echo '{{ user `ssh_password` }}' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
       "scripts": [
         "script/sshd.sh",
-        "script/vmware.sh",
-        "script/virtualbox.sh",
         "script/motd.sh",
         "script/install_python.sh",
         "script/install_gpg.sh",
