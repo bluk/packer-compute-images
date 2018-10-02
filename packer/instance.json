@@ -121,6 +121,11 @@
       "type": "vagrant",
       "vagrantfile_template": "{{ user `vagrantfile_template` }}",
       "only": ["virtualbox-iso", "vmware-iso"]
+    },
+    {
+      "type": "manifest",
+      "output": "manifest.json",
+      "strip_path": true
     }
   ],
   "provisioners": [
