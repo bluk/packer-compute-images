@@ -28,4 +28,80 @@ steps:
       - instance.json
     dir: packer
     id: build image with packer
+  - name: gcr.io/cloud-builders/gsutil
+    args:
+      - cp
+      - ${_ENCRYPTED_HUB_CREDENTIAL_GS_PATH}
+      - ${_ENCRYPTED_HUB_CREDENTIAL_LOCAL_PATH}
+    id: copy hub credentials
+  - name: gcr.io/cloud-builders/gcloud
+    args:
+      - kms
+      - decrypt
+      - --ciphertext-file=${_ENCRYPTED_HUB_CREDENTIAL_LOCAL_PATH}
+      - --plaintext-file=/config/hub
+      - --location=${_KMS_KEYRING_LOCATION}
+      - --keyring=${_KMS_KEYRING_NAME}
+      - --key=${_KMS_KEY_NAME}
+    id: decrypt hub credentials
+    volumes:
+      - name: 'config'
+        path: /config
+  - name: gcr.io/${PROJECT_ID}/jq
+    entrypoint: sh
+    args:
+      - -c
+      - "cat manifest.json | jq -r '.builds | map(select(.name == \"googlecompute\")) | .[0].artifact_id' > /data/image_id"
+    dir: packer
+    id: store build image
+    volumes:
+      - name: 'data'
+        path: /data
+  - name: gcr.io/${PROJECT_ID}/hub
+    id: create PR to infra repository
+    env:
+      - 'HUB_CONFIG=/config/hub'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        hub config --global credential.https://github.com.helper /usr/local/bin/hub-credential-helper
+        hub config --global hub.protocol https
+        hub config --global user.email "${_GITHUB_USER_EMAIL}"
+        hub config --global user.name "${_GITHUB_USER_NAME}"
+        hub clone "${_GITHUB_INFRA_REPOS_URL}"
+        cd ${_GITHUB_INFRA_REPOS_NAME}
+        hub fork
+        hub checkout -b "update-infra-${BUILD_ID}"
+        IMAGE_ID=$(cat /data/image_id)
+        cat <<EOF > ${_INFRA_FILE_PATH}
+        ${_INFRA_VARIABLE_NAME}="$${IMAGE_ID}"
+        EOF
+        hub add ${_INFRA_FILE_PATH}
+        hub commit -F- <<EOF
+        Update the base image - $${IMAGE_ID}
+
+        This commit updates the infrastructure base image to:
+
+            $${IMAGE_ID}
+
+        Commit SHA: ${COMMIT_SHA}
+        EOF
+        hub push ${_GITHUB_USER_NAME} "update-infra-${BUILD_ID}"
+        hub pull-request -F- <<EOF
+        Update the base image - $${IMAGE_ID}
+
+        This commit updates the infrastructure base image to:
+
+            $${IMAGE_ID}
+
+        Commit SHA: [`${COMMIT_SHA}`](${_SOURCE_REPOS_URL}/+/${COMMIT_SHA})
+
+        Build ID: [`${BUILD_ID}`](https://console.cloud.google.com/cloud-build/builds/${BUILD_ID})
+        EOF
+    volumes:
+      - name: 'config'
+        path: /config
+      - name: 'data'
+        path: /data
 timeout: 1200s
