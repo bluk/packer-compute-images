@@ -1,0 +1,11 @@
+---
+- hosts: default
+  roles:
+    - role: dev-sec.os-hardening
+      become: yes
+      become_user: root
+      become_method: sudo
+    - role: dev-sec.ssh-hardening
+      become: yes
+      become_user: root
+      become_method: sudo

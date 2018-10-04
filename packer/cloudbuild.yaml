@@ -16,6 +16,19 @@ steps:
       - --key=${_KMS_KEY_NAME}
     id: decrypt credentials
   - name: gcr.io/${PROJECT_ID}/packer
+    entrypoint: ansible-galaxy
+    args:
+      - install
+      - --roles-path
+      - /roles/
+      - -r
+      - requirements.yaml
+    dir: ansible
+    id: ansible install requirements
+    volumes:
+      - name: 'roles'
+        path: /roles
+  - name: gcr.io/${PROJECT_ID}/packer
     args:
       - build
       - -only=googlecompute
@@ -28,6 +41,9 @@ steps:
       - instance.json
     dir: packer
     id: build image with packer
+    volumes:
+      - name: 'roles'
+        path: /roles
   - name: gcr.io/cloud-builders/gsutil
     args:
       - cp
@@ -104,4 +120,4 @@ steps:
         path: /config
       - name: 'data'
         path: /data
-timeout: 1200s
+timeout: 3600s
