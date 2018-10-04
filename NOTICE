@@ -4,7 +4,6 @@ packer/http/preseed.cfg
 packer/script/cleanup.sh
 packer/script/minimize.sh
 packer/script/motd.sh
-packer/script/sshd.sh
 packer/script/update.sh
 packer/script/vagrant.sh
 packer/script/virtualbox.sh
