@@ -95,9 +95,9 @@ steps:
 
             $${IMAGE_ID}
 
-        Commit SHA: [`${COMMIT_SHA}`](${_SOURCE_REPOS_URL}/+/${COMMIT_SHA})
+        Commit SHA: [${COMMIT_SHA}](${_SOURCE_REPOS_BASE_URL_FOR_COMMIT}${COMMIT_SHA})
 
-        Build ID: [`${BUILD_ID}`](https://console.cloud.google.com/cloud-build/builds/${BUILD_ID})
+        Build ID: [${BUILD_ID}](https://console.cloud.google.com/cloud-build/builds/${BUILD_ID})
         EOF
     volumes:
       - name: 'config'
