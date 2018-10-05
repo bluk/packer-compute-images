@@ -14,8 +14,7 @@
       vars:
         ssh_use_pam: true
         ssh_allow_agent_forwarding: true
-        sftp_enabled: true
-        ssh_challengeresponseauthentication: true
+        sftp_enabled: false
         ssh_host_key_files: ["/etc/ssh/ssh_host_ed25519_key", "/etc/ssh/ssh_host_rsa_key"]
         ssh_macs:
           - hmac-sha2-512-etm@openssh.com
