@@ -172,11 +172,6 @@
     },
     {
       "type": "file",
-      "source": "files/sshd_config",
-      "destination": "/tmp/sshd_config"
-    },
-    {
-      "type": "file",
       "source": "files/sudoers-ssh-forward-agent",
       "destination": "/tmp/sudoers-ssh-forward-agent"
     },
