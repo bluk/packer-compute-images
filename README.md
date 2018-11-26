@@ -20,10 +20,18 @@ Switch to the `packer` sub-directory.
    The `googlecompute_account_file` is a service account's JSON credential file
    as mentioned in the [Packer Google Compute Builder][packer-googlecompute] documentation.
 
-2. If you are building a [VirtualBox][virtualbox] or [VMWare][vmware] image, you can use it with
+2. You need to install the Ansible roles to provision the image.
+
+       ansible-galaxy install -r ../ansible/requirements.yaml
+
+3. Modify or delete the `ansible.cfg` to point to the directory which contains your Ansible roles.
+
+4. If you are building a [VirtualBox][virtualbox] or [VMWare][vmware] image, you can use it with
    [Vagrant][vagrant], by running the following:
 
        vagrant box add ubuntu1804 box/virtualbox/ubuntu1804-0.1.0.box
+       # or
+       vagrant box add ubuntu1804 box/vmware/ubuntu1804-0.1.0.box
        vagrant init ubuntu1804
 
 ## Google Cloud Build
