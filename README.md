@@ -31,7 +31,7 @@ Switch to the `packer` sub-directory.
 
        vagrant box add ubuntu1804 box/virtualbox/ubuntu1804-0.1.0.box
        # or
-       vagrant box add ubuntu1804 box/vmware/ubuntu1804-0.1.0.box
+       vagrant box add ubuntu1804 box/vmware_desktop/ubuntu1804-0.1.0.box
        vagrant init ubuntu1804
 
 ## Google Cloud Build
