@@ -11,7 +11,7 @@
       "ssh_username": "{{ user `ssh_username` }}",
       "zone": "{{ user `googlecompute_zone` }}",
       "machine_type": "f1-micro",
-      "disk_size": "10",
+      "disk_size": "65536",
       "metadata": { "enable-oslogin": "false" }
     },
     {
@@ -195,6 +195,7 @@
       "scripts": [
         "script/sshd.sh",
         "script/motd.sh",
+        "script/install_ifdown.sh",
         "script/install_python.sh",
         "script/install_gpg.sh",
         "script/install_unzip.sh",

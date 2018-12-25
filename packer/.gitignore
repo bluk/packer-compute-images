@@ -1,7 +1,8 @@
-/box/
-/account.json
 /.vagrant/
-/output-ubuntu1804-virtualbox-iso
-/roles/
-/output-ubuntu1804-vmware-iso/
+/account.json
+/box/
 /manifest.json
+/output-ubuntu1604-vmware-iso
+/output-ubuntu1804-virtualbox-iso
+/output-ubuntu1804-vmware-iso/
+/roles/
